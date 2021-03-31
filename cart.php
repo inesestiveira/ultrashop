@@ -39,63 +39,75 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt">
-<head>
-	<meta charset="UTF-8">
-	<title>Ultra Shop - Carrinho</title>
-	<style>
-	
-		table, tr, td, th {
-			border: 1px solid black;
-			border-collapse: collapse;
-		}
-	</style>
-    <script>
 
+<head>
+    <meta charset="UTF-8">
+    <title>Ultra Shop - Carrinho</title>
+    <style>
+    table,
+    tr,
+    td,
+    th {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    </style>
+    <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-    const removeButtons = document.querySelectorAll(".remove");
-   
-   for(let button of removeButtons) {
-    button.addEventListener("click", () => {
-       
-       const product_id = button.dataset.product_id;
+        const removeButtons = document.querySelectorAll(".remove");
+        const quantityInputs = document.querySelectorAll(".quantity");
 
-fetch("requests.php", {
-    method: "POST", 
-    headers: {
-        "Content-Type":"application/x-www-form-urlencoded"
-    },
-    body: "request=removeProduct&product_id=" + product_id
-})
-.then( response => response.json() )
-.then( parsedResponse => {
-    if( parsedResponse.status == "OK" ) {
-        button.parentNode.parentNode.remove();
-    }
-});
+        for (let button of removeButtons) {
+            button.addEventListener("click", () => {
 
-   
-});
-   }
+                const product_id = button.dataset.product_id;
+
+            });
+        }
+
+        for (let input of quantityInputs) {
+
+            input.addEventListener("change", () => {
+                const product_id = input.dataset.product_id;
+                const quantity = input.value;
+
+                    fetch("requests.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: "request=changeQuantity&product_id=" +product_id+ "&quantity=" + quantity
+                    })
+                    .then(response => response.json())
+                    .then(parsedResponse => {
+                        if (parsedResponse.status == "OK") {
+
+                        }
+                    });
+            });
+
+        }
 
     });
 
     </script>
 </head>
+
 <body>
-<?php 
+    <?php 
     if(isset($_SESSION["cart"])) {
 ?>
-        <table>
-            <tr>
-                <th>Artigo</th>
-                <th>Quantidade</th>
-                <th>Preço</th>
-                <th>Total</th>
-                <th>Apagar</th>
-            </tr>
+    <table>
+        <tr>
+            <th>Artigo</th>
+            <th>Quantidade</th>
+            <th>Preço</th>
+            <th>Total</th>
+            <th>Apagar</th>
+        </tr>
 
-            <?php
+        <?php
 
             $total = 0;
             
@@ -105,7 +117,9 @@ fetch("requests.php", {
                 echo'
                 <tr>
                     <td>'.$item["name"].'</td>
-                    <td>' .$item["quantity"]. '</td>
+                    <td>
+                    <input data-product_id="' .$item["product_id"].'"  type="number" class="quantity" value="' .$item["quantity"]. '" min="1" max="' .$item["stock"]. '">
+                    </td>
                     <td>'.$item["price"].'€</td>
                     <td><span class="subtotal">'.$subtotal.'</span>€</td>
                     <td>
@@ -121,21 +135,22 @@ fetch("requests.php", {
             
             ?>
 
-            <tr>
-                <td colspan="3"></td>
-                <td colspan="2"><span class="total"><?php echo $total; ?></span>€</td>
-            </tr>
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="2"><span class="total"><?php echo $total; ?></span>€</td>
+        </tr>
 
-        </table>
-        <nav>
-            <a href="./">Voltar ao Ínicio</a>
-            <a href="checkout.php">Finalizar a compra</a>
-        </nav>
-<?php
+    </table>
+    <nav>
+        <a href="./">Voltar ao Ínicio</a>
+        <a href="checkout.php">Finalizar a compra</a>
+    </nav>
+    <?php
     }
     else {
         echo "<p>Ainda não tem artigos adicionados</p>";
     }
 ?>
 </body>
+
 </html>
