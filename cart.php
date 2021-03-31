@@ -58,6 +58,10 @@
         const removeButtons = document.querySelectorAll(".remove");
         const quantityInputs = document.querySelectorAll(".quantity");
 
+        function recalculateTotals() {
+            return null
+        }
+
         for (let button of removeButtons) {
             button.addEventListener("click", () => {
 
@@ -72,12 +76,13 @@
                 const product_id = input.dataset.product_id;
                 const quantity = input.value;
 
-                    fetch("requests.php", {
+                fetch("requests.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         },
-                        body: "request=changeQuantity&product_id=" +product_id+ "&quantity=" + quantity
+                        body: "request=changeQuantity&product_id=" + product_id + "&quantity=" +
+                            quantity
                     })
                     .then(response => response.json())
                     .then(parsedResponse => {
@@ -90,7 +95,6 @@
         }
 
     });
-
     </script>
 </head>
 
