@@ -58,8 +58,19 @@
         const removeButtons = document.querySelectorAll(".remove");
         const quantityInputs = document.querySelectorAll(".quantity");
 
-        function recalculateTotals() {
-            return null
+        function recalculateTotals(element) {
+
+            const tr = element.parentNode.parentNode;
+            const price = tr.dataset.price;
+            const quantity = element.value;
+
+            tr.querySelector(".subtotal").textContent = price * quantity;
+
+            let total = 0;
+            for (let subtotal of document.querySelectorAll(".subtotal")) {
+                total = total + Number(subtotal.textContent);
+            }
+            document.querySelector(".total").textContent = total;
         }
 
         for (let button of removeButtons) {
@@ -87,7 +98,7 @@
                     .then(response => response.json())
                     .then(parsedResponse => {
                         if (parsedResponse.status == "OK") {
-
+                            recalculateTotals(input);
                         }
                     });
             });
@@ -119,7 +130,7 @@
                 
                 $subtotal=$item["price"]*$item["quantity"];
                 echo'
-                <tr>
+                <tr data-price="' .$item["price"]. '">
                     <td>'.$item["name"].'</td>
                     <td>
                     <input data-product_id="' .$item["product_id"].'"  type="number" class="quantity" value="' .$item["quantity"]. '" min="1" max="' .$item["stock"]. '">
